@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../utils/config');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
-// const UnauthorizedError = require('../errors/unauthorized-err');
+const UnauthorizedError = require('../errors/unauthorized-err');
 const ConflictError = require('../errors/conflict-err');
 
 module.exports.createUser = (req, res, next) => {
@@ -84,5 +86,22 @@ module.exports.updateUser = (req, res, next) => {
       } else {
         next(err);
       }
+    });
+};
+
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: '7d',
+      });
+
+      res.send({ token });
+    })
+    .catch(() => {
+      next(new UnauthorizedError('Необходима авторизация.'));
     });
 };

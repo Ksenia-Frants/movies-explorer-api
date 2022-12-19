@@ -16,12 +16,12 @@ const validateUpdateUser = celebrate({
   }),
 });
 
-// const validateLogin = celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required(),
-//   }),
-// });
+const validateLogin = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+});
 
 const validateCreateMovie = celebrate({
   body: Joi.object().keys({
@@ -48,7 +48,7 @@ const validateWithMovieId = celebrate({
 module.exports = {
   validateCreateUser,
   validateUpdateUser,
-  // validateLogin,
+  validateLogin,
   validateCreateMovie,
   validateWithMovieId,
 };
