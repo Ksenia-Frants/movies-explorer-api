@@ -61,7 +61,7 @@ module.exports.updateUser = (req, res, next) => {
     req.user._id,
     {
       name: req.body.name,
-      about: req.body.about,
+      email: req.body.email,
     },
     {
       new: true,

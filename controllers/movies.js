@@ -38,7 +38,7 @@ module.exports.createMovie = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании карточки.',
+            'Переданы некорректные данные при создании фильма.',
           ),
         );
       } else {
@@ -64,7 +64,7 @@ module.exports.deleteMovie = (req, res, next) => {
         return next(new ForbiddenError('Нельзя удалять чужие фильмы.'));
       }
 
-      return movie.findByIdAndRemove(req.params.movieId).then((movieData) => {
+      return Movie.findByIdAndRemove(req.params.movieId).then((movieData) => {
         res.send(movieData);
       });
     })
