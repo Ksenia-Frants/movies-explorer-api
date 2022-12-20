@@ -6,6 +6,16 @@ const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 const ConflictError = require('../errors/conflict-err');
+const {
+  INCORRECT_DATA_USER_CREATE,
+  EMAIL_ALREADY_EXISTS,
+  NOT_FOUND_USER,
+  INCORRECT_DATA_USER_GET,
+  INCORRECT_DATA_PROFILE_UPDATE,
+  AUTHORIZATION_REQUIRED,
+  VALIDATION_ERROR,
+  CAST_ERROR,
+} = require('../utils/constants');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -19,14 +29,14 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => res.status(201).send(user.toJSON()))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === VALIDATION_ERROR) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при создании пользователя.',
+            INCORRECT_DATA_USER_CREATE,
           ),
         );
       } else if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже существует.'));
+        next(new ConflictError(EMAIL_ALREADY_EXISTS));
       } else {
         next(err);
       }
@@ -38,16 +48,16 @@ module.exports.getMyUser = (req, res, next) => {
     .then((user) => {
       if (!user) {
         return next(
-          new NotFoundError('Пользователь по указанному _id не найден.'),
+          new NotFoundError(NOT_FOUND_USER),
         );
       }
       return res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === CAST_ERROR) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обращении к пользователю.',
+            INCORRECT_DATA_USER_GET,
           ),
         );
       } else {
@@ -71,16 +81,16 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => {
       if (!user) {
         return next(
-          new NotFoundError('Пользователь с указанным _id не найден.'),
+          new NotFoundError(NOT_FOUND_USER),
         );
       }
       return res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === VALIDATION_ERROR) {
         next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении профиля.',
+            INCORRECT_DATA_PROFILE_UPDATE,
           ),
         );
       } else {
@@ -102,6 +112,6 @@ module.exports.login = (req, res, next) => {
       res.send({ token });
     })
     .catch(() => {
-      next(new UnauthorizedError('Необходима авторизация.'));
+      next(new UnauthorizedError(AUTHORIZATION_REQUIRED));
     });
 };

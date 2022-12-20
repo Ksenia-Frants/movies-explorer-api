@@ -1,25 +1,20 @@
 require('dotenv').config();
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
+const { limiter } = require('./utils/config');
 const router = require('./routes');
 const errorHandler = require('./middlewares/error');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DATABASE_URL } = process.env;
 
 const app = express();
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
-
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+mongoose.connect(DATABASE_URL, {
   useNewUrlParser: true,
 });
 
