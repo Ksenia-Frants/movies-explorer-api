@@ -12,3 +12,5 @@ module.exports.INCORRECT_DATA_MOVIE_DELETE = 'Переданы некоррек�
 module.exports.VALIDATION_ERROR = 'ValidationError';
 module.exports.CAST_ERROR = 'CastError';
 module.exports.SERVER_ERROR = 'На сервере произошла ошибка.';
+module.exports.WRONG_DATA = 'Неправильные почта или пароль';
+module.exports.PAGE_NOT_FOUND = 'Страница не найдена.';
