@@ -14,6 +14,7 @@ const { PORT = 3000, DATABASE_URL } = process.env;
 
 const app = express();
 
+mongoose.set('strictQuery', true);
 mongoose.connect(DATABASE_URL, {
   useNewUrlParser: true,
 });
