@@ -6,7 +6,10 @@ const limiter = rateLimit({
   max: 100,
 });
 
+const dataBaseURL = 'mongodb://localhost:27017/bitfilmsdb';
+
 module.exports = {
   JWT_SECRET: NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
   limiter,
+  dataBaseURL,
 };
