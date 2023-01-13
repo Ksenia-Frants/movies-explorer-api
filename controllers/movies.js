@@ -52,7 +52,8 @@ module.exports.createMovie = (req, res, next) => {
       } else {
         next(err);
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.getMovies = (req, res, next) => {
@@ -86,5 +87,6 @@ module.exports.deleteMovie = (req, res, next) => {
       } else {
         next(err);
       }
-    });
+    })
+    .catch(next);
 };

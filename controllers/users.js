@@ -40,7 +40,8 @@ module.exports.createUser = (req, res, next) => {
       } else {
         next(err);
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.getMyUser = (req, res, next) => {
@@ -63,7 +64,8 @@ module.exports.getMyUser = (req, res, next) => {
       } else {
         next(err);
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -93,10 +95,13 @@ module.exports.updateUser = (req, res, next) => {
             INCORRECT_DATA_PROFILE_UPDATE,
           ),
         );
+      } else if (err.code === 11000) {
+        next(new ConflictError(EMAIL_ALREADY_EXISTS));
       } else {
         next(err);
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.login = (req, res, next) => {
@@ -105,13 +110,16 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
 
     .then((user) => {
+      if (!user) {
+        return next(
+          new UnauthorizedError(AUTHORIZATION_REQUIRED),
+        );
+      }
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
 
-      res.send({ token });
+      return res.send({ token });
     })
-    .catch(() => {
-      next(new UnauthorizedError(AUTHORIZATION_REQUIRED));
-    });
+    .catch(next);
 };
