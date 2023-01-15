@@ -52,12 +52,12 @@ module.exports.createMovie = (req, res, next) => {
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
+  const owner = req.user._id;
+  Movie.find({ owner })
     .then((movies) => res.send(movies))
     .catch(next);
 };
@@ -66,7 +66,7 @@ module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId)
     .then((movie) => {
       if (!movie) {
-        next(new NotFoundError(NOT_FOUND_MOVIE));
+        return next(new NotFoundError(NOT_FOUND_MOVIE));
       }
 
       if (movie.owner._id.toString() !== req.user._id.toString()) {
@@ -87,6 +87,5 @@ module.exports.deleteMovie = (req, res, next) => {
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };

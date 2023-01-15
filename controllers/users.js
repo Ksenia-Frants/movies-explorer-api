@@ -4,7 +4,6 @@ const { JWT_SECRET } = require('../utils/config');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
-const UnauthorizedError = require('../errors/unauthorized-err');
 const ConflictError = require('../errors/conflict-err');
 const {
   INCORRECT_DATA_USER_CREATE,
@@ -12,7 +11,6 @@ const {
   NOT_FOUND_USER,
   INCORRECT_DATA_USER_GET,
   INCORRECT_DATA_PROFILE_UPDATE,
-  AUTHORIZATION_REQUIRED,
   VALIDATION_ERROR,
   CAST_ERROR,
 } = require('../utils/constants');
@@ -40,8 +38,7 @@ module.exports.createUser = (req, res, next) => {
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.getMyUser = (req, res, next) => {
@@ -64,8 +61,7 @@ module.exports.getMyUser = (req, res, next) => {
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -100,8 +96,7 @@ module.exports.updateUser = (req, res, next) => {
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.login = (req, res, next) => {
@@ -110,16 +105,11 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
 
     .then((user) => {
-      if (!user) {
-        return next(
-          new UnauthorizedError(AUTHORIZATION_REQUIRED),
-        );
-      }
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
 
-      return res.send({ token });
+      res.send({ token });
     })
     .catch(next);
 };
